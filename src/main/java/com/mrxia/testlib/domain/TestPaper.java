@@ -1,4 +1,4 @@
-package com.mrxia.testlib.beans.data;
+package com.mrxia.testlib.domain;
 
 import java.util.List;
 

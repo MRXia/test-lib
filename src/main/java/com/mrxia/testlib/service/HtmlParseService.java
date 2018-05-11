@@ -2,7 +2,7 @@ package com.mrxia.testlib.service;
 
 import java.util.Collection;
 
-import com.mrxia.testlib.beans.data.Subject;
+import com.mrxia.testlib.domain.Subject;
 
 /**
  * 通过Jsoup解析html的服务

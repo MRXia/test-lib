@@ -14,8 +14,8 @@ import org.jsoup.nodes.Node;
 import org.jsoup.select.Elements;
 import org.springframework.stereotype.Service;
 
-import com.mrxia.testlib.beans.data.Subject;
-import com.mrxia.testlib.beans.data.TestPaper;
+import com.mrxia.testlib.domain.Subject;
+import com.mrxia.testlib.domain.TestPaper;
 import com.mrxia.testlib.service.HtmlParseService;
 
 /**

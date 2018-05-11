@@ -1,4 +1,4 @@
-package com.mrxia.testlib.beans.data;
+package com.mrxia.testlib.domain;
 
 import lombok.Data;
 
@@ -12,6 +12,9 @@ public class TestQuestion {
 
     private Integer id;
 
+    /**
+     * 题目类型0：单选，1：多选
+     */
     private Integer type;
 
     /**

@@ -12,7 +12,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
 import com.google.common.collect.Maps;
-import com.mrxia.testlib.beans.data.Subject;
+import com.mrxia.testlib.domain.Subject;
 import com.mrxia.testlib.service.HtmlParseService;
 import com.mrxia.testlib.service.RemoteService;
 
