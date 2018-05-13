@@ -3,8 +3,11 @@ package com.mrxia.testlib.domain;
 import java.util.List;
 
 import javax.persistence.Entity;
+import javax.persistence.OneToMany;
 
 import org.springframework.data.jpa.domain.AbstractAuditable;
+
+import com.mrxia.common.domain.AbstractJsr310Auditable;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -16,7 +19,7 @@ import lombok.EqualsAndHashCode;
 @EqualsAndHashCode(callSuper = true)
 @Data
 @Entity
-public class Subject extends AbstractAuditable<User, Integer> {
+public class Subject extends AbstractJsr310Auditable<Integer> {
 
     /**
      * 科目名称
@@ -26,5 +29,6 @@ public class Subject extends AbstractAuditable<User, Integer> {
     /**
      * 包含试卷
      */
+    @OneToMany(mappedBy = "subject")
     private List<TestPaper> testPapers;
 }

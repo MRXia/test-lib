@@ -1,16 +1,30 @@
 package com.mrxia.testlib.domain;
 
+import javax.persistence.Entity;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
+
+import org.springframework.data.jpa.domain.AbstractAuditable;
+
+import com.mrxia.common.domain.AbstractJsr310Auditable;
+
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 /**
  * 考试试题
  *
  * @author xiazijian
  */
+@EqualsAndHashCode(callSuper = true)
 @Data
-public class TestQuestion {
+@Entity
+public class TestQuestion extends AbstractJsr310Auditable<Integer> {
 
-    private Integer id;
+    @ManyToOne
+    @JoinColumn
+    private TestPaper testPaper;
 
     /**
      * 题目类型0：单选，1：多选
@@ -49,4 +63,5 @@ public class TestQuestion {
      * 提示
      */
     private String tip;
+
 }

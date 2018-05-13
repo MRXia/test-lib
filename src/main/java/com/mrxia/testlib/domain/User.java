@@ -1,12 +1,8 @@
 package com.mrxia.testlib.domain;
 
-import java.util.Date;
-
 import javax.persistence.Entity;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
 
-import org.springframework.data.jpa.domain.AbstractPersistable;
+import com.mrxia.common.domain.AbstractJsr310Auditable;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -19,7 +15,7 @@ import lombok.EqualsAndHashCode;
 @EqualsAndHashCode(callSuper = true)
 @Data
 @Entity
-public class User extends AbstractPersistable<Integer> {
+public class User extends AbstractJsr310Auditable<Integer> {
 
     /**
      * 用户名
@@ -31,10 +27,5 @@ public class User extends AbstractPersistable<Integer> {
      */
     private String password;
 
-    /**
-     * 创建时间
-     */
-    @Temporal(TemporalType.TIMESTAMP)
-    private Date createdDate;
 }
 

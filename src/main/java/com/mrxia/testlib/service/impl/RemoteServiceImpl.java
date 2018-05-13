@@ -13,6 +13,7 @@ import org.springframework.web.client.RestTemplate;
 
 import com.google.common.collect.Maps;
 import com.mrxia.testlib.domain.Subject;
+import com.mrxia.testlib.domain.TestPaper;
 import com.mrxia.testlib.service.HtmlParseService;
 import com.mrxia.testlib.service.RemoteService;
 
@@ -69,6 +70,10 @@ public class RemoteServiceImpl implements RemoteService {
         return htmlParseService.parseSubjectList(response.getBody());
     }
 
+    @Override
+    public TestPaper selectTestPaper(Integer paperId) {
+        return null;
+    }
 
 
     private String requestUrl(String path) {

@@ -3,6 +3,7 @@ package com.mrxia.testlib.service;
 import java.util.Collection;
 
 import com.mrxia.testlib.domain.Subject;
+import com.mrxia.testlib.domain.TestPaper;
 
 /**
  * 远程请求抓取服务
@@ -27,4 +28,12 @@ public interface RemoteService {
      * @return 可选科目集合
      */
     Collection<Subject> getSubjectList(String sessionId);
+
+    /**
+     * 通过试卷id返回对应的试卷信息
+     *
+     * @param paperId 试卷id
+     * @return 包含所有考题和试卷信息的数据
+     */
+    TestPaper selectTestPaper(Integer paperId);
 }

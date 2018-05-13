@@ -58,7 +58,7 @@ public class HtmlParseServiceImpl implements HtmlParseService {
         String onclick = node.childNode(1).attr("onclick");
         Matcher matcher = ON_CLICK_FUNCTION.matcher(onclick);
         if (matcher.find()) {
-            tp.setId(Integer.parseInt(matcher.group(1)));
+            tp.paperId(Integer.parseInt(matcher.group(1)));
         }
         return tp;
     }
