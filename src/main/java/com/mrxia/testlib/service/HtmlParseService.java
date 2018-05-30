@@ -19,4 +19,11 @@ public interface HtmlParseService {
      */
     Collection<Subject> parseSubjectList(String html);
 
+    /**
+     * 从html中解析tickId，以获取试卷信息
+     *
+     * @param html html内容
+     * @return 解析出的tickId
+     */
+    Integer parseTickId(String html);
 }

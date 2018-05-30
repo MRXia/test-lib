@@ -26,6 +26,8 @@ public class HtmlParseServiceImpl implements HtmlParseService {
 
     private static final Pattern ON_CLICK_FUNCTION = Pattern.compile("enterkt\\((\\d+)\\)");
 
+    private static final Pattern TICK_ID_FUNCTION = Pattern.compile("InitShiJuanData\\((\\d+)\\)");
+
     @Override
     public Collection<Subject> parseSubjectList(String html) {
 
@@ -52,7 +54,18 @@ public class HtmlParseServiceImpl implements HtmlParseService {
         return subjects;
     }
 
+    @Override
+    public Integer parseTickId(String html) {
+
+        Matcher matcher = TICK_ID_FUNCTION.matcher(html);
+        if (matcher.find()) {
+            return Integer.parseInt(matcher.group(1));
+        }
+        return null;
+    }
+
     private TestPaper parseTestPaper(Node node) {
+
         TestPaper tp = new TestPaper();
         tp.setName(node.childNode(0).toString());
         String onclick = node.childNode(1).attr("onclick");

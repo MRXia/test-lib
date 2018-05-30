@@ -34,6 +34,7 @@ public class TestPaper extends AbstractJsr310Auditable<Integer> {
     @JsonProperty("tb_time")
     private Integer testTime;
 
+    @JsonProperty("data")
     @OneToMany(mappedBy = "testPaper")
     private List<TestQuestion> questions;
 

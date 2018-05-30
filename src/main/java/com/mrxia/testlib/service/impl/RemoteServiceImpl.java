@@ -4,10 +4,7 @@ import java.util.*;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
@@ -56,10 +53,10 @@ public class RemoteServiceImpl implements RemoteService {
 
         String request = requestBuilder().path("/tc/lgproc.jsp")
                 .queryParam("model", "login")
-                .queryParam("username", "{userName}")
-                .queryParam("password", "{password}")
+                .queryParam("username", userName)
+                .queryParam("password", password)
                 .build().toString();
-        ResponseEntity<String> response = restTemplate.getForEntity(request, String.class, userName, password);
+        ResponseEntity<String> response = restTemplate.getForEntity(request, String.class);
 
         return cookieMap(response.getHeaders()).get("JSESSIONID");
     }
@@ -89,30 +86,33 @@ public class RemoteServiceImpl implements RemoteService {
                 requestEntity,
                 String.class);
 
+        // 解析请求得到的body，获得科目集合
         return htmlParseService.parseSubjectList(response.getBody());
     }
 
     @Override
-    public TestPaper selectTestPaper(String sessionId, Integer subjectId, Integer paperId) {
+    public TestPaper selectTestPaper(String sessionId, Integer subjectType, Integer paperId) {
 
         HttpEntity<?> requestEntity = createHttpEntity(sessionId);
 
         // 第一次请求，选择做题试卷
-        ResponseEntity<String> response = restTemplate.exchange(
-                requestBuilder("/tc/lgproc.jsp?model=opensj&shijuanid={paperId}&kemu={subjectType}&subtype={subjectId"),
-                HttpMethod.GET,
-                requestEntity,
-                String.class);
+        String request = requestBuilder().path("/tc/lgproc.jsp")
+                .queryParam("model", "opensj")
+                .queryParam("kemu", subjectType)
+                .queryParam("shijuanid", paperId)
+                .build().toString();
+        ResponseEntity<String> response = restTemplate.exchange(request, HttpMethod.GET, requestEntity, String.class);
 
-        response.getBody();
+        // 从响应中获取tickId
+        Integer tickId = htmlParseService.parseTickId(response.getBody());
 
         // 第二次请求，获取考题
-        ResponseEntity<TestPaper> testPaperResponse = restTemplate.postForEntity(
-                requestBuilder("/pecf?model=cjgetkaoti&tid={tid}&kemu={subjectType}"),
-                null,
-                TestPaper.class);
-
-        return testPaperResponse.getBody();
+        request = requestBuilder().path("/pecf")
+                .queryParam("model", "cjgetkaoti")
+                .queryParam("tid", tickId)
+                .queryParam("subjectType", subjectType)
+                .build().toString();
+        return restTemplate.postForEntity(request, requestEntity, TestPaper.class).getBody();
     }
 
     private UriComponentsBuilder requestBuilder() {
@@ -120,7 +120,7 @@ public class RemoteServiceImpl implements RemoteService {
     }
 
     private String requestBuilder(String path) {
-        return UriComponentsBuilder.fromHttpUrl("http://" + zhengdaAddress).build().toString();
+        return requestBuilder().path(path).build().toString();
     }
 
     private Map<String, String> cookieMap(HttpHeaders headers) {
