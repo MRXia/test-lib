@@ -27,5 +27,10 @@ public class User extends AbstractJsr310Auditable<Integer> {
      */
     private String password;
 
+    /**
+     * 账户所有的科目类型
+     */
+    private Integer subjectType;
+
 }
 

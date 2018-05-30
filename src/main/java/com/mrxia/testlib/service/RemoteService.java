@@ -22,11 +22,14 @@ public interface RemoteService {
     String login(String userName, String password);
 
     /**
-     * 通过sessionId获取当前用户的可选科目
+     * 通过sessionId获取当前用户选择科目的地址，url中包含科目类型
      *
      * @param sessionId 正大系统会话id
      * @return 可选科目集合
      */
+    String getSubjectSelectAddress(String sessionId);
+
+
     Collection<Subject> getSubjectList(String sessionId);
 
     /**
@@ -35,5 +38,5 @@ public interface RemoteService {
      * @param paperId 试卷id
      * @return 包含所有考题和试卷信息的数据
      */
-    TestPaper selectTestPaper(Integer paperId);
+    TestPaper selectTestPaper(String sessionId, Integer subjectId, Integer paperId);
 }

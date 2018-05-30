@@ -19,21 +19,22 @@ public class RemoteServiceImplTest {
     @Autowired
     private RemoteService remoteService;
 
+    private String sessionId;
+
     @Before
     public void setUp() {
+        login();
     }
 
     @Test
     public void login() {
-
-        String sessionId = remoteService.login("曾雪萍", "920424zxp");
+        sessionId = remoteService.login("曾雪萍", "920424zxp");
         System.out.println(sessionId);
     }
 
     @Test
     public void getSubjectList() {
 
-        String sessionId = remoteService.login("曾雪萍", "920424zxp");
         Collection<Subject> subjectList = remoteService.getSubjectList(sessionId);
         for (Subject subject : subjectList) {
             System.out.println(subject);
