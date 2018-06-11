@@ -1,6 +1,6 @@
 package com.mrxia.testlib.service;
 
-import java.util.Collection;
+import java.util.List;
 
 import com.mrxia.testlib.domain.Subject;
 
@@ -17,7 +17,7 @@ public interface HtmlParseService {
      * @param html html内容
      * @return 包含试卷信息的科目列表
      */
-    Collection<Subject> parseSubjectList(String html);
+    List<Subject> parseSubjectList(String html);
 
     /**
      * 从html中解析tickId，以获取试卷信息

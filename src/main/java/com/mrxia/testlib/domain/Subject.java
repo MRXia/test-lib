@@ -25,6 +25,11 @@ public class Subject extends AbstractJsr310Auditable<Integer> {
     private String name;
 
     /**
+     * 科目类型
+     */
+    private Integer type;
+
+    /**
      * 包含试卷
      */
     @OneToMany(mappedBy = "subject")

@@ -1,6 +1,7 @@
 package com.mrxia.testlib.domain;
 
 import javax.persistence.Entity;
+import javax.persistence.Transient;
 
 import com.mrxia.common.domain.AbstractJsr310Auditable;
 
@@ -32,5 +33,7 @@ public class User extends AbstractJsr310Auditable<Integer> {
      */
     private Integer subjectType;
 
+    @Transient
+    private String zhengdaSessionId;
 }
 

@@ -1,6 +1,8 @@
 package com.mrxia.testlib.service;
 
-import java.util.Collection;
+import java.util.List;
+
+import org.springframework.lang.Nullable;
 
 import com.mrxia.testlib.domain.Subject;
 import com.mrxia.testlib.domain.TestPaper;
@@ -19,6 +21,7 @@ public interface RemoteService {
      * @param password 密码
      * @return 正大系统的sessionId
      */
+    @Nullable
     String login(String userName, String password);
 
     /**
@@ -35,7 +38,7 @@ public interface RemoteService {
      * @param sessionId 正大系统会话id
      * @return 可选科目的集合
      */
-    Collection<Subject> getSubjectList(String sessionId);
+    List<Subject> getSubjectList(String sessionId);
 
     /**
      * 通过试卷id返回对应的试卷信息

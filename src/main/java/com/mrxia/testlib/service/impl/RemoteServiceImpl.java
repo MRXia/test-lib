@@ -1,10 +1,16 @@
 package com.mrxia.testlib.service.impl;
 
-import java.util.*;
+import java.util.Collections;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.*;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
@@ -32,8 +38,6 @@ public class RemoteServiceImpl implements RemoteService {
     @Value("${remote.zhengda.address}")
     private String zhengdaAddress;
 
-    private static final String URL_SEPARATOR = "/";
-
     private static final String COOKIES_SEPARATOR = ";";
 
     private static final String KEY_VALUE_SEPARATOR = "=";
@@ -58,6 +62,11 @@ public class RemoteServiceImpl implements RemoteService {
                 .build().toString();
         ResponseEntity<String> response = restTemplate.getForEntity(request, String.class);
 
+        // 如果返回为0，则登录失败
+        if (Integer.parseInt(response.getBody().trim()) == 0) {
+            return null;
+        }
+
         return cookieMap(response.getHeaders()).get("JSESSIONID");
     }
 
@@ -76,7 +85,7 @@ public class RemoteServiceImpl implements RemoteService {
     }
 
     @Override
-    public Collection<Subject> getSubjectList(String sessionId) {
+    public List<Subject> getSubjectList(String sessionId) {
 
         HttpEntity<?> requestEntity = createHttpEntity(sessionId);
 

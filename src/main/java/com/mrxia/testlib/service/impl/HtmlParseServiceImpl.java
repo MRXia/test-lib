@@ -29,7 +29,7 @@ public class HtmlParseServiceImpl implements HtmlParseService {
     private static final Pattern TICK_ID_FUNCTION = Pattern.compile("InitShiJuanData\\((\\d+)\\)");
 
     @Override
-    public Collection<Subject> parseSubjectList(String html) {
+    public List<Subject> parseSubjectList(String html) {
 
         Document root = Jsoup.parse(html);
         Elements subjectElements = root.select("span[id^=pg]");
