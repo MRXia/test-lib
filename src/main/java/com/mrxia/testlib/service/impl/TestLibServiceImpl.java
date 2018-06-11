@@ -71,6 +71,7 @@ public class TestLibServiceImpl implements TestLibService {
             user.setUsername(username);
             user.setPassword(password);
             user.setSubjectType(Integer.valueOf(subjectType));
+            user.setZhengdaSessionId(sessionId);
             userRepository.save(user);
         }
         return user;
