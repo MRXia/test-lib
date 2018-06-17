@@ -2,15 +2,21 @@ package com.mrxia.testlib.controller;
 
 import java.util.Map;
 
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.SessionAttribute;
+import javax.servlet.http.HttpSession;
 
+import org.springframework.stereotype.Controller;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+
+import com.mrxia.testlib.bean.request.StartTestRequest;
+import com.mrxia.testlib.constant.SessionKey;
 import com.mrxia.testlib.domain.User;
 import com.mrxia.testlib.service.TestLibService;
 
 /**
  * 题库视图接口控制类
+ *
  * @author xiazijian
  */
 @Controller
@@ -23,9 +29,16 @@ public class TestLibController {
     }
 
     @GetMapping({"/", "/index"})
-    public String index(Map<String, Object> map, @SessionAttribute("login-user") User user) {
+    public String index(Map<String, Object> map, @ModelAttribute User loginUser) {
 
-        map.put("subjects", testLibService.listSubject(user));
+        map.put("subjects", testLibService.listSubject(loginUser));
         return "index";
+    }
+
+    @GetMapping("/pager/start")
+    public String startTest(@Validated StartTestRequest startRequest,
+                            @ModelAttribute User loginUser,
+                            Map<String, Object> map) {
+        return null;
     }
 }

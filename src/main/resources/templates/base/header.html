@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:fragment="head(title, links)">
+    <!-- Required meta tags -->
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"/>
+
+    <title th:replace="${title}">科目列表</title>
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="/static/css/bootstrap.min.css"/>
+    <link rel="stylesheet" href="/static/css/custom.css"/>
+
+    <!--/* Per-page placeholder for additional links */-->
+    <th:block th:replace="${links}" />
+</head>
+<body>
+<header th:fragment="header(title)" class="d-flex justify-content-between py-lg-4 py-3">
+    <div></div>
+    <h2 th:text="${title}"></h2>
+    <p>你好，<a th:href="@{'/account/'+${session['login-user']['username']}}">[[${session['login-user']['username']}]]</a></p>
+</header>
+</body>
+</html>

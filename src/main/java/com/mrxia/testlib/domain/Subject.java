@@ -2,7 +2,9 @@ package com.mrxia.testlib.domain;
 
 import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
+import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 
 import com.mrxia.common.domain.AbstractJsr310Auditable;
@@ -32,6 +34,6 @@ public class Subject extends AbstractJsr310Auditable<Integer> {
     /**
      * 包含试卷
      */
-    @OneToMany(mappedBy = "subject")
+    @OneToMany(mappedBy = "subject", cascade = CascadeType.PERSIST)
     private List<TestPaper> testPapers;
 }

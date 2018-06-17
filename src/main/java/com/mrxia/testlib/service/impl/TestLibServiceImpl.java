@@ -89,6 +89,7 @@ public class TestLibServiceImpl implements TestLibService {
         if (!subjectList.isEmpty()) {
             subjectList.forEach(subject -> {
                 subject.setType(user.getSubjectType());
+                subject.getTestPapers().parallelStream().forEach(tp -> tp.setSubject(subject));
                 subjectRepository.save(subject);
             });
         }

@@ -60,3 +60,17 @@ body.login {
     border-top-left-radius: 0;
     border-top-right-radius: 0;
 }
+
+.test-paper-list .list-group-item:first-child {
+    border-top: none;
+    border-top-left-radius: 0;
+    border-top-right-radius: 0;
+}
+
+.footer {
+    padding: 2.5rem 0;
+    color: #999;
+    text-align: center;
+    background-color: #f9f9f9;
+    border-top: .05rem solid #e5e5e5;
+}

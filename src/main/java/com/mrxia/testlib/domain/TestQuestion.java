@@ -21,7 +21,6 @@ import lombok.EqualsAndHashCode;
 public class TestQuestion extends AbstractJsr310Auditable<Integer> {
 
     @ManyToOne
-    @JoinColumn
     private TestPaper testPaper;
 
     /**
