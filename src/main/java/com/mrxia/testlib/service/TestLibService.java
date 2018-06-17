@@ -38,13 +38,4 @@ public interface TestLibService {
      * @return 科目列表
      */
     List<Subject> listSubject(User user);
-
-    /**
-     * <h2>查找指定科目下的试卷分页</h2>
-     *
-     * @param subjectId 科目id
-     * @param pageable 分页参数
-     * @return 试卷分页
-     */
-    Page<TestPaper> pageTestPager(Integer subjectId, Pageable pageable);
 }
