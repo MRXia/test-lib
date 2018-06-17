@@ -1,17 +1,21 @@
 package com.mrxia.testlib.service.impl;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.Assert;
 
+import com.mrxia.common.bean.BeanMapperFactory;
 import com.mrxia.common.http.UrlParser;
 import com.mrxia.testlib.domain.Subject;
 import com.mrxia.testlib.domain.TestPaper;
+import com.mrxia.testlib.domain.TestQuestion;
 import com.mrxia.testlib.domain.User;
 import com.mrxia.testlib.repository.SubjectRepository;
+import com.mrxia.testlib.repository.TestPaperRepository;
 import com.mrxia.testlib.repository.UserRepository;
 import com.mrxia.testlib.service.RemoteService;
 import com.mrxia.testlib.service.TestLibService;
@@ -36,13 +40,16 @@ public class TestLibServiceImpl implements TestLibService {
 
     private final SubjectRepository subjectRepository;
 
-    @Autowired
+    private final TestPaperRepository testPaperRepository;
+
     public TestLibServiceImpl(RemoteService remoteService,
                               UserRepository userRepository,
-                              SubjectRepository subjectRepository) {
+                              SubjectRepository subjectRepository,
+                              TestPaperRepository testPaperRepository) {
         this.remoteService = remoteService;
         this.userRepository = userRepository;
         this.subjectRepository = subjectRepository;
+        this.testPaperRepository = testPaperRepository;
     }
 
     @Override
@@ -78,6 +85,7 @@ public class TestLibServiceImpl implements TestLibService {
     }
 
     @Override
+    @Transactional
     public List<Subject> listSubject(final User user) {
 
         List<Subject> subjectList = subjectRepository.findByType(user.getSubjectType());
@@ -98,7 +106,26 @@ public class TestLibServiceImpl implements TestLibService {
     }
 
     @Override
-    public Page<TestPaper> pageTestPager(Integer subjectId, Pageable pageable) {
-        return null;
+    @Transactional
+    public TestPaper getTestPaper(User user, Integer subjectId, Integer paperId) {
+
+        Optional<Subject> subject = subjectRepository.findById(subjectId);
+        Assert.isTrue(subject.isPresent(), "试卷科目不存在");
+
+        Optional<TestPaper> optional = testPaperRepository.findBySubjectAndId(subject.get(), paperId);
+
+        Assert.isTrue(optional.isPresent(), "试卷不存在");
+        TestPaper testPaper = optional.get();
+
+        // 如果试题不存在，则请求远程，获取数据并保存数据库
+        if (testPaper.getQuestions().isEmpty()) {
+            BeanMapperFactory.getMapper()
+                    .map(remoteService.selectTestPaper(user.getZhengdaSessionId(), subject.get().getType(), paperId), testPaper);
+            for (TestQuestion question : testPaper.getQuestions()) {
+                question.setTestPaper(testPaper);
+            }
+            testPaperRepository.save(testPaper);
+        }
+        return testPaper;
     }
 }

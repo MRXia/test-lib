@@ -1,8 +1,6 @@
 package com.mrxia.testlib.domain;
 
-import javax.persistence.Entity;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
+import javax.persistence.*;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.mrxia.common.domain.AbstractJsr310Auditable;
@@ -20,7 +18,7 @@ import lombok.EqualsAndHashCode;
 @Entity
 public class TestQuestion extends AbstractJsr310Auditable<Integer> {
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.MERGE)
     private TestPaper testPaper;
 
     /**
@@ -33,18 +31,23 @@ public class TestQuestion extends AbstractJsr310Auditable<Integer> {
      * 题目
      */
     @JsonProperty("tb_timu")
+    @Column(columnDefinition = "text")
     private String title;
 
     @JsonProperty("tb_q1")
+    @Column(name = "answer_a")
     private String answerA;
 
     @JsonProperty("tb_q2")
+    @Column(name = "answer_b")
     private String answerB;
 
     @JsonProperty("tb_q3")
+    @Column(name = "answer_c")
     private String answerC;
 
     @JsonProperty("tb_q4")
+    @Column(name = "answer_d")
     private String answerD;
 
     /**
@@ -63,12 +66,12 @@ public class TestQuestion extends AbstractJsr310Auditable<Integer> {
      * 扣分
      */
     @JsonProperty("tb_koufen")
-    private Integer points;
+    private Float points;
 
     /**
      * 提示
      */
     @JsonProperty("tb_tishiinf")
+    @Column(length = 2048)
     private String tip;
-
 }

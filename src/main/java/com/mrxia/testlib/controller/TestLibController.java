@@ -2,15 +2,12 @@ package com.mrxia.testlib.controller;
 
 import java.util.Map;
 
-import javax.servlet.http.HttpSession;
-
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 
 import com.mrxia.testlib.bean.request.StartTestRequest;
-import com.mrxia.testlib.constant.SessionKey;
 import com.mrxia.testlib.domain.User;
 import com.mrxia.testlib.service.TestLibService;
 
@@ -35,11 +32,12 @@ public class TestLibController {
         return "index";
     }
 
-    @GetMapping("/pager/start")
+    @GetMapping("/paper/start")
     public String startTest(@Validated StartTestRequest startRequest,
                             @ModelAttribute User loginUser,
                             Map<String, Object> map) {
-
-        return null;
+        map.put("testPaper",
+                testLibService.getTestPaper(loginUser, startRequest.getSubjectId(), startRequest.getPaperId()));
+        return "paper/start";
     }
 }

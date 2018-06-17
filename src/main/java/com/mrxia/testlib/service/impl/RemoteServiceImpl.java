@@ -110,7 +110,7 @@ public class RemoteServiceImpl implements RemoteService {
                 .queryParam("kemu", subjectType)
                 .queryParam("shijuanid", paperId)
                 .build().toString();
-        ResponseEntity<String> response = restTemplate.exchange(request, HttpMethod.GET, requestEntity, String.class);
+            ResponseEntity<String> response = restTemplate.exchange(request, HttpMethod.GET, requestEntity, String.class);
 
         // 从响应中获取tickId
         Integer tickId = htmlParseService.parseTickId(response.getBody());

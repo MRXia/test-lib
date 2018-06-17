@@ -38,4 +38,13 @@ public interface TestLibService {
      * @return 科目列表
      */
     List<Subject> listSubject(User user);
+
+    /**
+     * <h2>获取试卷信息</h2>
+     * @param user 登录用户信息
+     * @param subjectId 科目id
+     * @param pagerId 试卷id
+     * @return 试卷包含的相关信息
+     */
+    TestPaper getTestPaper(User user, Integer subjectId, Integer pagerId);
 }

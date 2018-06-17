@@ -47,7 +47,7 @@ public class TestPaper implements Persistable<Integer> {
     private LocalDateTime updateTime;
 
     @JsonProperty("data")
-    @OneToMany(mappedBy = "testPaper")
+    @OneToMany(mappedBy = "testPaper", cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     private List<TestQuestion> questions;
 
     @Override

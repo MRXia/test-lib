@@ -1,7 +1,10 @@
 package com.mrxia.testlib.repository;
 
+import java.util.Optional;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 
+import com.mrxia.testlib.domain.Subject;
 import com.mrxia.testlib.domain.TestPaper;
 
 /**
@@ -9,4 +12,6 @@ import com.mrxia.testlib.domain.TestPaper;
  * @author xiazijian
  */
 public interface TestPaperRepository extends JpaRepository<TestPaper, Integer> {
+
+   Optional<TestPaper> findBySubjectAndId(Subject subject, Integer id);
 }

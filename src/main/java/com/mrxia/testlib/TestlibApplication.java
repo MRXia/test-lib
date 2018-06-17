@@ -13,6 +13,7 @@ import org.springframework.data.jpa.convert.threeten.Jsr310JpaConverters;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
+import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.web.client.RestTemplate;
 
 import com.mrxia.testlib.config.http.NoRedirectClientHttpRequestFactory;
@@ -24,6 +25,7 @@ import com.mrxia.testlib.config.http.NoRedirectClientHttpRequestFactory;
  */
 @SpringBootApplication
 @EntityScan(basePackageClasses = {TestlibApplication.class, Jsr310JpaConverters.class})
+@EnableTransactionManagement
 public class TestlibApplication {
 
     public static void main(String[] args) {

@@ -15,5 +15,5 @@ public class StartTestRequest {
     private Integer subjectId;
 
     @NotNull
-    private Integer pagerId;
+    private Integer paperId;
 }

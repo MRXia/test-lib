@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="zh-cn" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="/base/header :: head(~{::title}, ~{})">
+    <title>[[|考试开始，${testPaper.name}|]]</title>
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="/static/css/bootstrap.min.css"/>
+    <link rel="stylesheet" href="/static/css/custom.css"/>
+</head>
+<body>
+<table class="table table-hover">
+    <thead>
+    <tr>
+        <th scope="col">Type</th>
+        <th scope="col">Column heading</th>
+        <th scope="col">Column heading</th>
+        <th scope="col">Column heading</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr class="table-active" th:each="question : ${testPaper.questions}">
+        <th scope="row" th:text="${question.title}">Active</th>
+        <td th:text="${question.answerA}">Column content</td>
+        <td th:text="${question.answerB}">Column content</td>
+        <td th:text="${question.answerC}">Column content</td>
+    </tr>
+    </tbody>
+</table>
+<th:block th:include="/base/load_js :: load"/>
+</body>
+</html>

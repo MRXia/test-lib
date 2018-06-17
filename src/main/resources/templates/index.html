@@ -23,9 +23,9 @@
              th:classappend="${stat.index == 0} ? 'active show'">
             <div class="list-group test-paper-list">
                 <a class="list-group-item list-group-item-action align-items-center text-primary"
-                   th:each="testPager : ${subject.testPapers}"
-                   th:href="@{/pager/start(subjectId=${subject.id}, pagerId=${testPager.id})}"
-                   th:text="${testPager.name}">
+                   th:each="testPaper : ${subject.testPapers}"
+                   th:href="@{/paper/start(subjectId=${subject.id}, paperId=${testPaper.id})}"
+                   th:text="${testPaper.name}">
                 </a>
             </div>
         </div>
