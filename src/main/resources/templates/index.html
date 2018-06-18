@@ -19,7 +19,7 @@
         </li>
     </ul>
     <div id="myTabContent" class="tab-content mb-5">
-        <div class="tab-pane fade" th:each="subject,stat : ${subjects}" th:id="|subject-${subject.id}|"
+        <div class="tab-pane" th:each="subject,stat : ${subjects}" th:id="|subject-${subject.id}|"
              th:classappend="${stat.index == 0} ? 'active show'">
             <div class="list-group test-paper-list">
                 <a class="list-group-item list-group-item-action align-items-center text-primary"

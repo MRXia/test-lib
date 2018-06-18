@@ -3,6 +3,7 @@ const apiRequest = function (url, data, method) {
     return fetch(url, {
         method: method || 'GET',
         mode: 'cors',
+        credentials: 'include',
         headers: {
             'credentials': 'include',
             'Content-Type': 'application/json'

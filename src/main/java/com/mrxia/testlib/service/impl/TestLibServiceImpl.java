@@ -119,7 +119,7 @@ public class TestLibServiceImpl implements TestLibService {
         // 如果试题不存在，则请求远程，获取数据并保存数据库
         if (testPaper.getQuestions().isEmpty()) {
             BeanMapperFactory.getMapper()
-                    .map(remoteService.selectTestPaper(user.getZhengdaSessionId(), subject.get().getType(), paperId), testPaper);
+                    .map(remoteService.selectTestPaper(user.getZhengdaSessionId(), user.getSubjectType(), paperId), testPaper);
             for (TestQuestion question : testPaper.getQuestions()) {
                 question.setTestPaper(testPaper);
             }

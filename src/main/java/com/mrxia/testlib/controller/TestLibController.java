@@ -6,6 +6,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import com.mrxia.testlib.bean.request.StartTestRequest;
 import com.mrxia.testlib.domain.User;
@@ -33,11 +34,7 @@ public class TestLibController {
     }
 
     @GetMapping("/paper/start")
-    public String startTest(@Validated StartTestRequest startRequest,
-                            @ModelAttribute User loginUser,
-                            Map<String, Object> map) {
-        map.put("testPaper",
-                testLibService.getTestPaper(loginUser, startRequest.getSubjectId(), startRequest.getPaperId()));
+    public String startTest(StartTestRequest request, Map<String, Object> map) {
         return "paper/start";
     }
 }

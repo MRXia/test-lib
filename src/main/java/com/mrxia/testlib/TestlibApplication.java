@@ -1,5 +1,6 @@
 package com.mrxia.testlib;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -35,12 +36,13 @@ public class TestlibApplication {
     @Bean
     public RestTemplate restTemplate(RestTemplateBuilder builder) {
         RestTemplate template = builder.build();
-        for (HttpMessageConverter<?> converter : template.getMessageConverters()) {
+        /*for (HttpMessageConverter<?> converter : template.getMessageConverters()) {
             if (converter instanceof MappingJackson2HttpMessageConverter) {
-                ((MappingJackson2HttpMessageConverter) converter)
+                MappingJackson2HttpMessageConverter c = (MappingJackson2HttpMessageConverter) converter;
+               new ArrayList<>((MappingJackson2HttpMessageConverter) converter).getSupportedMediaTypes())
                         .setSupportedMediaTypes(Collections.singletonList(MediaType.TEXT_HTML));
             }
-        }
+        }*/
         return template;
     }
 
