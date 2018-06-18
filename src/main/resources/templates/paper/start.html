@@ -1,31 +1,50 @@
 <!DOCTYPE html>
 <html lang="zh-cn" xmlns:th="http://www.thymeleaf.org">
 <head th:replace="/base/header :: head(~{::title}, ~{})">
-    <title>[[|考试开始，${testPaper.name}|]]</title>
+    <title>[[${testPaper.name}]]</title>
 
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="/static/css/bootstrap.min.css"/>
     <link rel="stylesheet" href="/static/css/custom.css"/>
 </head>
 <body>
-<table class="table table-hover">
-    <thead>
-    <tr>
-        <th scope="col">Type</th>
-        <th scope="col">Column heading</th>
-        <th scope="col">Column heading</th>
-        <th scope="col">Column heading</th>
-    </tr>
-    </thead>
-    <tbody>
-    <tr class="table-active" th:each="question : ${testPaper.questions}">
-        <th scope="row" th:text="${question.title}">Active</th>
-        <td th:text="${question.answerA}">Column content</td>
-        <td th:text="${question.answerB}">Column content</td>
-        <td th:text="${question.answerC}">Column content</td>
-    </tr>
-    </tbody>
-</table>
+<div class="container h-100">
+    <nav id="status" class="bg-primary text-light my-2 p-2">
+        <ul class="navbar-nav mr-auto text-light d-flex flex-row">
+            <li class="nav-item mr-2">
+                考试时间: <span>1:30:00</span>
+            </li>
+            <li class="nav-item mr-auto">
+                总得分：<span>0</span>
+            </li>
+            <li class="nav-item">
+                <a id="submit" href="#">交卷</a>
+            </li>
+        </ul>
+    </nav>
+    <section id="questionContent">
+        <div class="card mb-3 border-primary" th:object="${testPaper.questions[0]}">
+            <h3 class="card-header">第1题</h3>
+            <div class="card-body">
+                <p class="card-text" th:text="*{title}">Some quick example text to build on the card title and make up the bulk of the
+                    card's content.</p>
+            </div>
+            <div class="list-group list-group-flush">
+                <a class="list-group-item list-group-item-action" href="#" th:text="|A.*{answerA}|">A. Cras justo odio</a>
+                <a class="list-group-item list-group-item-action" href="#" th:text="|B.*{answerB}|">B. Dapibus ac facilisis in</a>
+                <a class="list-group-item list-group-item-action" href="#" th:text="|C.*{answerC}|">Porta ac consectetur ac</a>
+                <a class="list-group-item list-group-item-action" href="#" th:text="|D.*{answerD}|">Vestibulum at eros</a>
+            </div>
+            <div class="card-footer text-muted text-right">
+                <button type="button" class="btn btn-link disabled">上一题</button>
+                <button type="button" class="btn btn-link">下一题</button>
+            </div>
+        </div>
+    </section>
+</div>
 <th:block th:include="/base/load_js :: load"/>
+<script id="questionTpl" type="text/html">
+
+</script>
 </body>
 </html>

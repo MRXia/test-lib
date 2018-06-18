@@ -2,6 +2,7 @@ package com.mrxia.testlib.domain;
 
 import javax.persistence.*;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.mrxia.common.domain.AbstractJsr310Auditable;
 
@@ -19,6 +20,7 @@ import lombok.EqualsAndHashCode;
 public class TestQuestion extends AbstractJsr310Auditable<Integer> {
 
     @ManyToOne(cascade = CascadeType.MERGE)
+    @JsonIgnore
     private TestPaper testPaper;
 
     /**

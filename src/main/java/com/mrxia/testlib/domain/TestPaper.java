@@ -9,13 +9,11 @@ import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.domain.Persistable;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
-import org.springframework.lang.Nullable;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.mrxia.common.domain.AbstractJsr310Auditable;
 
 import lombok.Data;
-import lombok.EqualsAndHashCode;
 
 /**
  * 试题试卷类
@@ -35,6 +33,7 @@ public class TestPaper implements Persistable<Integer> {
     private String name;
 
     @ManyToOne(cascade = CascadeType.MERGE)
+    @JsonIgnore
     private Subject subject;
 
     @JsonProperty("tb_time")

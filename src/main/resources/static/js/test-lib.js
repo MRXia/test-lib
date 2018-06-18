@@ -20,22 +20,53 @@ const apiRequest = function (url, data, method) {
     });
 };
 
-const invoice = (function ($) {
+const testPaper = (function ($) {
 
-    let save = function (clickButton) {
-        let invoiceForm = $(clickButton).parents(".invoice-form");
-        let data = invoiceForm.serializeArray().reduce(function (m, o) {
-            m[o.name] = o.value;
-            return m;
-        }, {});
-        apiRequest("/invoice", data, "POST")
+    let paper,
+        stat = {
+            current : 0,    // 当前题号
+            score : 0,      // 总分
+            selected : [],  // 已选情况
+        },
+        question = $("#questionContent");
+
+    let init = function (subjectId, paperId) {
+        apiRequest("/paper/start",
+            {
+                subjectId: subjectId,
+                paperId: paperId
+            },
+            "POST")
+            .then(function (data) {
+                paper = data;
+                // 开始计时
+                countdown(data.testTime)
+            })
             .then(function () {
-                alert.success("保存成功");
+
             });
-    };
+        },
+
+        countdown = function (time) {
+
+        },
+
+        // 选择答案
+        chooseAnswer = function (answer) {
+            stat.selected[stat.current] = answer;
+        },
+
+        selectQuestion = function (qid) {
+            stat.current = qid;
+            question.html(template("questionTpl", {
+                question: paper.questions[qid],
+                current: qid
+            }));
+        }
+    ;
 
     return {
-        save: save
+        "init": init
     }
 
 })(jQuery);
