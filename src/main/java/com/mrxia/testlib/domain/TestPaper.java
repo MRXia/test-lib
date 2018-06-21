@@ -36,7 +36,6 @@ public class TestPaper implements Persistable<Integer> {
     @JsonIgnore
     private Subject subject;
 
-    @JsonProperty("tb_time")
     private Integer testTime;
 
     @CreatedDate
@@ -45,7 +44,7 @@ public class TestPaper implements Persistable<Integer> {
     @LastModifiedDate
     private LocalDateTime updateTime;
 
-    @JsonProperty("data")
+
     @OneToMany(mappedBy = "testPaper", cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     private List<TestQuestion> questions;
 
@@ -58,5 +57,19 @@ public class TestPaper implements Persistable<Integer> {
     @Override
     public String toString() {
         return String.format("Entity of type %s with id: %s", this.getClass().getName(), this.getId());
+    }
+
+    /*
+     通过不同名的set方法反序列化远程json数据
+    */
+
+    @JsonProperty("tb_time")
+    public void setTbTime(Integer testTime) {
+        this.testTime = testTime;
+    }
+
+    @JsonProperty("data")
+    public void setData(List<TestQuestion> questions) {
+        this.questions = questions;
     }
 }
