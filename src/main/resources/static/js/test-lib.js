@@ -70,6 +70,7 @@ const testPaper = (function ($) {
         checkedAnswer(answer) {
             let currentAnswer = stat.selected[stat.current] || '';
 
+            // 遍历A,B,C,D选项，如果当前答案包含而被选中，则去除选项，如果当前答案未包含而选中，则添加该选项
             currentAnswer = this.answerArray.map(value => {
                 let choose = value === answer;
                 if (currentAnswer.indexOf(value) === -1) {
@@ -83,6 +84,8 @@ const testPaper = (function ($) {
         }
 
         checkedOption(answer) {
+
+            // 多选题添加选中样式时需使用checked的clone对象
             question.find(".list-group .list-group-item").children().remove();
             stat.selected[stat.current].split('').forEach(value => {
                 $("#answer" + value).append(checked.clone());
