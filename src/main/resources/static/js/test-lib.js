@@ -14,6 +14,100 @@ const apiRequest = function (url, data, method) {
 
 const testPaper = (function ($) {
 
+    /*
+     * 问题类型公共类
+     */
+    class QuestionType {
+        constructor(tplId) {
+            this.tplId = tplId;
+        }
+
+        createData(question) {
+            return question;
+        }
+
+        createQuestion(question, index) {
+            return template(this.tplId, {
+                question:this.createData(question),
+                current: index,
+                isLast: index === paper.questions.length - 1
+            });
+        }
+
+        chooseAnswer(answer) {
+            this.checkedAnswer(answer);
+            this.checkedOption(answer);
+        }
+
+        // 选择答案赋值操作
+        checkedAnswer(answer) {
+            stat.selected[stat.current] = answer;
+        }
+
+        // 选择答案视图操作
+        checkedOption(answer) {
+        }
+    }
+
+    /*单选题类型*/
+    class SingleChoiceQuestion extends QuestionType {
+        constructor() {
+            super("singleChoiceTpl")
+        }
+
+        checkedOption(answer) {
+            $("#answer" + answer).append(checked);
+        }
+    }
+
+    /*多选题类型*/
+    class MultipleChoiceQuestion extends QuestionType {
+        constructor() {
+            super("multipleChoiceTpl");
+            this.answerArray = ['A', 'B', 'C', 'D'];
+        }
+
+        checkedAnswer(answer) {
+            let currentAnswer = stat.selected[stat.current] || '';
+
+            currentAnswer = this.answerArray.map(value => {
+                let choose = value === answer;
+                if (currentAnswer.indexOf(value) === -1) {
+                    return choose ? value : '';
+                } else {
+                    return choose ? '' : value;
+                }
+            }).join('');
+
+            stat.selected[stat.current] = currentAnswer;
+        }
+
+        checkedOption(answer) {
+            question.find(".list-group .list-group-item").children().remove();
+            stat.selected[stat.current].split('').forEach(value => {
+                $("#answer" + value).append(checked.clone());
+            });
+        }
+    }
+
+    /*判断题类型*/
+    class TrueOrFalseQuestion extends QuestionType {
+        constructor() {
+            super("trueFalseTpl")
+        }
+
+        checkedOption(answer) {
+            $("#answer" + (answer === '正确' ? 'True' : 'False')).append(checked);
+        }
+    }
+
+    /*操作题类型*/
+    class OperateQuestion extends QuestionType {
+        constructor() {
+            super("operateTpl")
+        }
+    }
+
     let paper = {
             questions:[]
         },
@@ -23,7 +117,15 @@ const testPaper = (function ($) {
             selected : [],  // 已选情况
         },
         question = $("#questionContent"),
+        qidSelector = $("#qidSelector"),
         checked = $('<span class="oi oi-check"></span>');
+
+    let questionTypeEnum = [
+        new SingleChoiceQuestion(),
+        new MultipleChoiceQuestion(),
+        new TrueOrFalseQuestion(),
+        new OperateQuestion()
+    ];
 
     let init = function (subjectId, paperId) {
         apiRequest("/paper/start",
@@ -38,6 +140,9 @@ const testPaper = (function ($) {
                 countdown(data.testTime)
             })
             .then(function () {
+                qidSelector.find(".modal-body").html(template("qidSelectorTpl",{
+                    questions:paper.questions
+                }));
                 selectQuestion(0);
             });
         },
@@ -48,28 +153,19 @@ const testPaper = (function ($) {
 
         // 选择答案
         chooseAnswer = function (answer) {
-            stat.selected[stat.current] = answer;
-            checkedOption(answer);
+            questionTypeEnum[paper.questions[stat.current].type].chooseAnswer(answer);
         },
 
         // 选择考题
         selectQuestion = function (qid) {
             stat.current = qid;
-            question.html(template("questionTpl", {
-                question: paper.questions[qid],
-                current: qid,
-                isLast: qid === paper.questions.length - 1
-            }));
+            let questionType = questionTypeEnum[paper.questions[qid].type];
+            question.html(questionType.createQuestion(paper.questions[qid], qid));
 
             let answer = stat.selected[qid];
             if (answer) {
-                checkedOption(answer);
+                questionType.checkedOption(answer);
             }
-        },
-
-        checkedOption = function (answer) {
-            question.find(".list-group .list-group-item").children().remove();
-            $("#answer" + answer).append(checked);
         }
     ;
 

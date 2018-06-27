@@ -75,15 +75,21 @@ body.login {
     border-top: .05rem solid #e5e5e5;
 }
 
-#submit {
+#status a{
+    padding: 0.5rem;
     color: rgba(255, 255, 255, 0.6);
 }
 
-#submit:hover,
-#submit:focus {
+#submit a:hover,
+#submit a:focus {
     color: #fff;
 }
 
 #questionContent .list-group .list-group-item.checked {
     background-color: #78C2AD;
 }
+
+/*
+#questionContent .list-group a {
+    pointer-events: none;
+}*/
