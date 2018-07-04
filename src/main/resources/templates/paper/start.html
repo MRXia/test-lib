@@ -19,7 +19,7 @@
                 总得分：<span>0</span>
             </li>
             <li class="nav-item" data-toggle="modal" data-target="#qidSelector">
-                <a href="#">题号</a>
+                <a href="javascript:void(0)">题号</a>
             </li>
             <li class="nav-item">
                 <a id="submit" href="#">交卷</a>
@@ -39,41 +39,6 @@
                     </button>
                 </div>
                 <div class="modal-body">
-                    <table class="table table-bordered">
-                        <tbody>
-                        <tr>
-                            <td colspan="5">单选题</td>
-                        </tr>
-                        <tr>
-                            <td>01</td>
-                            <td>02</td>
-                            <td>03</td>
-                            <td>04</td>
-                            <td>05</td>
-                        </tr>
-                        <tr>
-                            <td>06</td>
-                            <td>07</td>
-                            <td>08</td>
-                            <td>09</td>
-                            <td>10</td>
-                        </tr>
-                        <tr>
-                            <td>11</td>
-                            <td>12</td>
-                            <td>13</td>
-                            <td>14</td>
-                            <td>15</td>
-                        </tr>
-                        <tr>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                        </tr>
-                        </tbody>
-                    </table>
                 </div>
             </div>
         </div>
@@ -140,6 +105,33 @@
         <a class="list-group-item list-group-item-action d-flex justify-content-between align-items-center" id="answerFalse"
            onclick="testPaper.chooseAnswer('错误')" href="javascript:void(0)">错误</a>
     </div>
+    {{/block}}
+</script>
+<script id="operateTpl" type="text/html">
+    {{extend 'questionTpl'}}
+    {{block 'option'}}
+    {{each question.items item ii}}
+    <div class="card-body">
+        <p class="card-text">
+            第{{ii + 1}}小题 <br/>
+            {{item.title}}
+        </p>
+    </div>
+    <div id="item{{ii}}" class="list-group list-group-flush">
+        <a class="list-group-item list-group-item-action d-flex justify-content-between align-items-center"
+           id="item{{ii}}-answerA"
+           onclick="testPaper.chooseAnswer('A', {{ii}})" href="javascript:void(0)">{{item.answerA}}</a>
+        <a class="list-group-item list-group-item-action d-flex justify-content-between align-items-center"
+           id="item{{ii}}-answerB"
+           onclick="testPaper.chooseAnswer('B', {{ii}})" href="javascript:void(0)">{{item.answerB}}</a>
+        <a class="list-group-item list-group-item-action d-flex justify-content-between align-items-center"
+           id="item{{ii}}-answerC"
+           onclick="testPaper.chooseAnswer('C', {{ii}})" href="javascript:void(0)">{{item.answerC}}</a>
+        <a class="list-group-item list-group-item-action d-flex justify-content-between align-items-center"
+           id="item{{ii}}-answerD"
+           onclick="testPaper.chooseAnswer('D', {{ii}})" href="javascript:void(0)">{{item.answerD}}</a>
+    </div>
+    {{/each}}
     {{/block}}
 </script>
 <script id="qidSelectorTpl" type="text/html">
