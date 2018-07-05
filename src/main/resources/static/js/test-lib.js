@@ -66,6 +66,10 @@ const testPaper = (function ($) {
                 }
             }).join('');
         }
+
+        compareAnswer(currentAnswer, rightAnswer) {
+            return currentAnswer === rightAnswer;
+        }
     }
 
     /*单选题类型*/
@@ -217,6 +221,10 @@ const testPaper = (function ($) {
                 $("#item" + item + "-answer" + value).append(checked.clone());
             });
         }
+
+        compareAnswer(currentAnswer, rightAnswer) {
+            rightAnswer.split()
+        }
     }
 
     let paper = {
@@ -279,13 +287,29 @@ const testPaper = (function ($) {
             if (answer) {
                 questionType.checkedOption(answer);
             }
+        },
+
+        submit = function () {
+
+            let total = 0;
+            paper.questions.forEach((question, index) => {
+                let typeEnum = questionTypeEnum[question.type];
+                let answer = stat.selected[index];
+
+                if (typeEnum.compareAnswer(answer, question.rightAnswer)) {
+                    total += question.score;
+                }
+            });
+
+            Alert.info("总分:" + total);
         }
     ;
 
     return {
         "init": init,
         "selectQuestion": selectQuestion,
-        "chooseAnswer": chooseAnswer
+        "chooseAnswer": chooseAnswer,
+        "submit": submit
     }
 
 })(jQuery);
