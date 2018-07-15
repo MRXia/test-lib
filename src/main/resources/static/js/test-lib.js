@@ -18,20 +18,24 @@ const testPaper = (function ($) {
      * 问题类型公共类
      */
     class QuestionType {
-        constructor(tplId) {
+
+        constructor(tplId, question) {
             this.tplId = tplId;
-            this.answerArray = ['A', 'B', 'C', 'D'];
+            this.selected = '';
+            this.rightAnswer = '';
+            this.score = 0;
+            $.extend(this, question);
         }
 
         // 构建题目数据
-        createData(question) {
-            return question;
+        createData() {
+            return this;
         }
 
         // 使用题目数据和题号，调用对应模板，构建题目
-        createQuestion(question, index) {
+        createQuestion(index) {
             return template(this.tplId, {
-                question:this.createData(question),
+                question:this.createData(),
                 current: index,
                 isLast: index === paper.questions.length - 1
             });
@@ -45,7 +49,7 @@ const testPaper = (function ($) {
 
         // 选择答案赋值操作
         checkedAnswer(answer) {
-            stat.selected[stat.current] = answer;
+            this.selected = answer;
         }
 
         // 选择答案视图操作
@@ -56,8 +60,8 @@ const testPaper = (function ($) {
          * 遍历A,B,C,D选项，如果当前答案包含而被选中，则去除选项，如果当前答案未包含而选中，则添加该选项
          * 如已选择"AC", 若选择"B"选项，则返回"ABC";若选择"A"选项，则返回"C"
          */
-        checkedMultiAnswer(answer, currentAnswer) {
-            return this.answerArray.map(value => {
+        static checkedMultiAnswer(answer, currentAnswer) {
+            return QuestionType.answerArray.map(value => {
                 let choose = value === answer;
                 if (currentAnswer.indexOf(value) === -1) {
                     return choose ? value : '';
@@ -67,15 +71,17 @@ const testPaper = (function ($) {
             }).join('');
         }
 
-        compareAnswer(currentAnswer, rightAnswer) {
-            return currentAnswer === rightAnswer;
+        calScore() {
+            return this.selected === this.rightAnswer ? this.score : 0;
         }
     }
 
+    QuestionType.answerArray = ['A', 'B', 'C', 'D'];
+
     /*单选题类型*/
     class SingleChoiceQuestion extends QuestionType {
-        constructor() {
-            super("singleChoiceTpl");
+        constructor(question) {
+            super("singleChoiceTpl", question);
         }
 
         checkedOption(answer) {
@@ -85,20 +91,20 @@ const testPaper = (function ($) {
 
     /*多选题类型*/
     class MultipleChoiceQuestion extends QuestionType {
-        constructor() {
-            super("multipleChoiceTpl");
+        constructor(question) {
+            super("multipleChoiceTpl", question);
         }
 
         checkedAnswer(answer) {
-            let currentAnswer = stat.selected[stat.current] || '';
-            stat.selected[stat.current] = this.checkedMultiAnswer(answer, currentAnswer);
+            this.selected = QuestionType.checkedMultiAnswer(answer, this.selected);
         }
 
-        checkedOption(answer) {
+        checkedOption() {
 
+            let answer = this.selected;
             // 多选题添加选中样式时需使用checked的clone对象
             question.find(".list-group .list-group-item").children().remove();
-            stat.selected[stat.current].split('').forEach(value => {
+            answer.split('').forEach(value => {
                 $("#answer" + value).append(checked.clone());
             });
         }
@@ -106,32 +112,42 @@ const testPaper = (function ($) {
 
     /*判断题类型*/
     class TrueOrFalseQuestion extends QuestionType {
-        constructor() {
-            super("trueFalseTpl");
+        constructor(question) {
+            super("trueFalseTpl", question);
         }
 
         checkedOption(answer) {
             $("#answer" + (answer === '正确' ? 'True' : 'False')).append(checked);
         }
+
+        // 判断题做对得分，做错扣分, 不做0分
+        calScore() {
+            if (this.selected) {
+                return this.selected === this.rightAnswer ? this.score : -this.points;
+            } else {
+                return 0;
+            }
+        }
     }
 
     /*操作题类型*/
     class OperateQuestion extends QuestionType {
-        constructor() {
-            super("operateTpl");
+        constructor(question) {
+            super("operateTpl", question);
+            this.selected = [];
         }
 
-        createData(question) {
+        createData() {
 
             // 如果操作题未被渲染，则进行预处理
-            if (!question.items) {
-                this.renderItems(question);
+            if (!this.items) {
+                this.renderItems();
             }
 
-            return question;
+            return this;
         }
 
-        renderItems(question){
+        renderItems(){
 
             let title = "";
             let items = [];
@@ -141,7 +157,7 @@ const testPaper = (function ($) {
             let itemStart = false;
             let itemStatus;
 
-            question.title.split("<br>").forEach(value => {
+            this.title.split("<br>").forEach(value => {
 
                 // 排除字符串为空的行
                 if(!$.trim(value)) {
@@ -163,25 +179,13 @@ const testPaper = (function ($) {
                     item = {title:''};
                     itemStatus = 'title';
                 } else {
-                    switch ($.trim(value).substr(0, 1)) {
-                        case 'A':
-                            item.answerA = value;
-                            itemStatus = 'answerA';
-                            break;
-                        case 'B':
-                            item.answerB = value;
-                            itemStatus = 'answerB';
-                            break;
-                        case 'C':
-                            item.answerC = value;
-                            itemStatus = 'answerC';
-                            break;
-                        case 'D':
-                            item.answerD = value;
-                            itemStatus = 'answerD';
-                            break;
-                        default:
-                            item[itemStatus] += value;
+                    let letter = $.trim(value).substr(0, 1);
+                    if("A_B_C_D".indexOf(letter) !== -1) {
+                        let key = "answer" + letter
+                        item[key] = value;
+                        itemStatus = 'key';
+                    } else {
+                        item[itemStatus] += value;
                     }
                 }
             });
@@ -191,18 +195,13 @@ const testPaper = (function ($) {
                 items.push(item);
             }
 
-            question.title = title;
-            question.items = items;
+            this.title = title;
+            this.items = items;
         }
 
         checkedAnswer(answer, item) {
-
-            if (!stat.selected[stat.current]) {
-                stat.selected[stat.current] = [];
-            }
-
-            let currentAnswer = stat.selected[stat.current][item] || '';
-            stat.selected[stat.current][item] = this.checkedMultiAnswer(answer, currentAnswer);
+            let currentAnswer = this.selected[item] || '';
+            this.selected[item] = QuestionType.checkedMultiAnswer(answer, currentAnswer);
         }
 
         checkedOption(answer, item) {
@@ -217,13 +216,33 @@ const testPaper = (function ($) {
 
         checkedItem(item) {
             question.find(".list-group#item" + item + " .list-group-item").children().remove();
-            stat.selected[stat.current][item].split('').forEach(value => {
+            this.selected[item].split('').forEach(value => {
                 $("#item" + item + "-answer" + value).append(checked.clone());
             });
         }
 
-        compareAnswer(currentAnswer, rightAnswer) {
-            rightAnswer.split()
+        // 操作题平均每小题2分，答对全部选项得2分，未答对全部得1分，答错选项则为0分
+        calScore() {
+            let rightAnswer = this.rightAnswer.split('__#__');
+            let eachScore = this.score / (this.items ? this.items.length : 5);
+            let totalScore = 0;
+
+            this.selected.forEach((selected, index) => {
+                let answer = rightAnswer[index];
+                if (selected === answer) {
+                    totalScore += eachScore;
+                } else {
+                    let split = selected.split('');
+                    for (let i = 0; i < split.length; i++) {
+                        if (answer.indexOf(split[i]) === -1) {
+                            return;
+                        }
+                    }
+                    totalScore += eachScore / 2;
+                }
+            });
+
+            return totalScore;
         }
     }
 
@@ -231,19 +250,19 @@ const testPaper = (function ($) {
             questions:[]
         },
         stat = {
-            current : 0,    // 当前题号
-            score : 0,      // 总分
-            selected : [],  // 已选情况
+            current: 0,    // 当前题号
+            question: {},  // 当前题目
+            score: 0,      // 总分
         },
         question = $("#questionContent"),
         qidSelector = $("#qidSelector"),
         checked = $('<span class="oi oi-check"></span>');
 
     let questionTypeEnum = [
-        new SingleChoiceQuestion(),
-        new MultipleChoiceQuestion(),
-        new TrueOrFalseQuestion(),
-        new OperateQuestion()
+        SingleChoiceQuestion,
+        MultipleChoiceQuestion,
+        TrueOrFalseQuestion,
+        OperateQuestion
     ];
 
     let init = function (subjectId, paperId) {
@@ -255,6 +274,10 @@ const testPaper = (function ($) {
             "POST")
             .then(function (data) {
                 paper = data;
+                for (let i = 0; i < data.questions.length; i++) {
+                    let question = data.questions[i];
+                    data.questions[i] = new questionTypeEnum[question.type](question);
+                }
                 // 开始计时
                 countdown(data.testTime)
             })
@@ -273,35 +296,28 @@ const testPaper = (function ($) {
         // 选择答案
         chooseAnswer = function () {
             let args = Array.prototype.slice.call(arguments);
-            let typeEnum = questionTypeEnum[paper.questions[stat.current].type];
-            typeEnum.chooseAnswer.apply(typeEnum, args);
+            stat.question.chooseAnswer(...args);
         },
 
         // 选择考题
         selectQuestion = function (qid) {
             stat.current = qid;
-            let questionType = questionTypeEnum[paper.questions[qid].type];
-            question.html(questionType.createQuestion(paper.questions[qid], qid));
+            stat.question = paper.questions[qid];
+            question.html(stat.question.createQuestion(qid));
 
-            let answer = stat.selected[qid];
-            if (answer) {
-                questionType.checkedOption(answer);
+            if (stat.question.selected) {
+                stat.question.checkedOption(stat.question.selected);
             }
         },
 
         submit = function () {
 
             let total = 0;
-            paper.questions.forEach((question, index) => {
-                let typeEnum = questionTypeEnum[question.type];
-                let answer = stat.selected[index];
-
-                if (typeEnum.compareAnswer(answer, question.rightAnswer)) {
-                    total += question.score;
-                }
+            paper.questions.forEach((question) => {
+                total += question.calScore();
             });
 
-            Alert.info("总分:" + total);
+            alert("总分:" + total);
         }
     ;
 

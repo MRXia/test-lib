@@ -144,7 +144,7 @@
         {{if $index % 5 == 0}}
         <tr>
         {{/if}}
-            <td><a href="#" onclick="testPaper.selectQuestion({{$index}})">{{$index + 1}}</a></td>
+            <td><a href="#" onclick="testPaper.selectQuestion({{$index}})" data-dismiss="modal">{{$index + 1}}</a></td>
         {{if $index % 5 == 4}}
         </tr>
         {{/if}}
