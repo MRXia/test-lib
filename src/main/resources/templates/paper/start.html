@@ -137,17 +137,25 @@
 <script id="qidSelectorTpl" type="text/html">
     <table class="table table-bordered">
         <tbody>
-        <tr>
-            <td colspan="5">单选题</td>
-        </tr>
-        {{each questions}}
-        {{if $index % 5 == 0}}
-        <tr>
-        {{/if}}
-            <td><a href="#" onclick="testPaper.selectQuestion({{$index}})" data-dismiss="modal">{{$index + 1}}</a></td>
-        {{if $index % 5 == 4}}
-        </tr>
-        {{/if}}
+        {{each types type}}
+            <tr>
+                <td colspan="5">
+                    {{if $index == 0}} 单选题
+                    {{else if $index == 1}} 多选题
+                    {{else if $index == 2}} 判断题
+                    {{else if $index == 3}} 操作题
+                    {{/if}}
+                </td>
+            </tr>
+            {{each type}}
+                {{if $index % 5 == 0}}
+                <tr>
+                {{/if}}
+                    <td><a href="#" onclick="testPaper.selectQuestion({{$value}})" data-dismiss="modal">{{$value + 1}}</a></td>
+                {{if $index % 5 == 4}}
+                </tr>
+                {{/if}}
+            {{/each}}
         {{/each}}
         </tbody>
     </table>

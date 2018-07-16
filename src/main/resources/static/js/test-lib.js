@@ -247,7 +247,8 @@ const testPaper = (function ($) {
     }
 
     let paper = {
-            questions:[]
+            questions:[],
+            types:[]        // 保存题目类型的索引
         },
         stat = {
             current: 0,    // 当前题号
@@ -273,17 +274,24 @@ const testPaper = (function ($) {
             },
             "POST")
             .then(function (data) {
-                paper = data;
+                $.extend(paper, data);
                 for (let i = 0; i < data.questions.length; i++) {
                     let question = data.questions[i];
                     data.questions[i] = new questionTypeEnum[question.type](question);
+
+                    let types = paper.types[question.type];
+                    if(!types) {
+                        types = [];
+                        paper.types[question.type] = types;
+                    }
+                    types.push(i);
                 }
                 // 开始计时
                 countdown(data.testTime)
             })
             .then(function () {
                 qidSelector.find(".modal-body").html(template("qidSelectorTpl",{
-                    questions:paper.questions
+                    types:paper.types
                 }));
                 selectQuestion(0);
             });
