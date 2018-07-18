@@ -15,7 +15,7 @@
             <li class="nav-item mr-2">
                 考试时间: <span>1:30:00</span>
             </li>
-            <li class="nav-item mr-auto">
+            <li class="nav-item mr-auto" id="score">
                 总得分：<span>0</span>
             </li>
             <li class="nav-item" data-toggle="modal" data-target="#qidSelector">
@@ -133,6 +133,11 @@
     </div>
     {{/each}}
     {{/block}}
+</script>
+<script id="tipTpl" type="text/html">
+    <div class="card-body text-info">
+        {{@ tip}}
+    </div>
 </script>
 <script id="qidSelectorTpl" type="text/html">
     <table class="table table-bordered">

@@ -24,6 +24,7 @@ const testPaper = (function ($) {
             this.selected = '';
             this.rightAnswer = '';
             this.score = 0;
+            this.tip = '';
             $.extend(this, question);
         }
 
@@ -54,6 +55,10 @@ const testPaper = (function ($) {
 
         // 选择答案视图操作
         checkedOption(answer) {
+        }
+
+        // 展示提示与正确答案
+        showRightAnswer() {
         }
 
         /* 多选题选择答案时，根据答案列表与当前选项，返回选择后的结果
@@ -87,6 +92,13 @@ const testPaper = (function ($) {
         checkedOption(answer) {
             $("#answer" + answer).append(checked);
         }
+
+        showRightAnswer() {
+            $("#answer" + this.rightAnswer).addClass("bg-success");
+            if(this.selected && this.selected !== this.rightAnswer) {
+                $("#answer" + this.selected).addClass("bg-danger");
+            }
+        }
     }
 
     /*多选题类型*/
@@ -108,6 +120,20 @@ const testPaper = (function ($) {
                 $("#answer" + value).append(checked.clone());
             });
         }
+
+        showRightAnswer() {
+            this.rightAnswer.split('').forEach(val =>{
+                $("#answer" + val).addClass("bg-success");
+            });
+
+            if(this.selected) {
+                this.selected.split('').forEach(val => {
+                    if (this.rightAnswer.indexOf(val) === -1) {
+                        $("#answer" + val).addClass("bg-danger");
+                    }
+                });
+            }
+        }
     }
 
     /*判断题类型*/
@@ -116,8 +142,12 @@ const testPaper = (function ($) {
             super("trueFalseTpl", question);
         }
 
+        static getAnswerId(answer) {
+            return "#answer" + (answer === '正确' ? 'True' : 'False');
+        }
+
         checkedOption(answer) {
-            $("#answer" + (answer === '正确' ? 'True' : 'False')).append(checked);
+            $(TrueOrFalseQuestion.getAnswerId(answer)).append(checked);
         }
 
         // 判断题做对得分，做错扣分, 不做0分
@@ -128,6 +158,13 @@ const testPaper = (function ($) {
                 return 0;
             }
         }
+
+        showRightAnswer() {
+            $(TrueOrFalseQuestion.getAnswerId(this.rightAnswer)).addClass("bg-success");
+            if(this.selected && this.selected !== this.rightAnswer) {
+                $(TrueOrFalseQuestion.getAnswerId(this.selected)).addClass("bg-danger");
+            }
+        }
     }
 
     /*操作题类型*/
@@ -135,6 +172,7 @@ const testPaper = (function ($) {
         constructor(question) {
             super("operateTpl", question);
             this.selected = [];
+            this.rightAnswer = this.rightAnswer.split('__#__');
         }
 
         createData() {
@@ -181,7 +219,7 @@ const testPaper = (function ($) {
                 } else {
                     let letter = $.trim(value).substr(0, 1);
                     if("A_B_C_D".indexOf(letter) !== -1) {
-                        let key = "answer" + letter
+                        let key = "answer" + letter;
                         item[key] = value;
                         itemStatus = 'key';
                     } else {
@@ -223,7 +261,7 @@ const testPaper = (function ($) {
 
         // 操作题平均每小题2分，答对全部选项得2分，未答对全部得1分，答错选项则为0分
         calScore() {
-            let rightAnswer = this.rightAnswer.split('__#__');
+            let rightAnswer = this.rightAnswer;
             let eachScore = this.score / (this.items ? this.items.length : 5);
             let totalScore = 0;
 
@@ -244,6 +282,22 @@ const testPaper = (function ($) {
 
             return totalScore;
         }
+
+        showRightAnswer() {
+            this.rightAnswer.forEach((answer, item) => {
+                answer.split('').forEach(val =>{
+                    $("#item" + item + "-answer" + val).addClass("bg-success");
+                });
+
+                if(this.selected[item]) {
+                    this.selected[item].split('').forEach(val => {
+                        if (answer.indexOf(val) === -1) {
+                            $("#item" + item + "-answer" + val).addClass("bg-danger");
+                        }
+                    });
+                }
+            });
+        }
     }
 
     let paper = {
@@ -254,9 +308,11 @@ const testPaper = (function ($) {
             current: 0,    // 当前题号
             question: {},  // 当前题目
             score: 0,      // 总分
+            submitted: false //是否已交卷
         },
-        question = $("#questionContent"),
-        qidSelector = $("#qidSelector"),
+        question = $("#questionContent"),   // 题目面板
+        qidSelector = $("#qidSelector"),    // 题目选择器
+        score = $("#score"),                // 总得分
         checked = $('<span class="oi oi-check"></span>');
 
     let questionTypeEnum = [
@@ -303,6 +359,12 @@ const testPaper = (function ($) {
 
         // 选择答案
         chooseAnswer = function () {
+
+            // 如果已经交卷，则不可选择
+            if(stat.submitted) {
+                return;
+            }
+
             let args = Array.prototype.slice.call(arguments);
             stat.question.chooseAnswer(...args);
         },
@@ -316,16 +378,53 @@ const testPaper = (function ($) {
             if (stat.question.selected) {
                 stat.question.checkedOption(stat.question.selected);
             }
+
+            // 如果已经交卷，则展示正确答案与提示
+            if (stat.submitted) {
+                showTip();
+            }
+        },
+
+        showTip = function () {
+            question.find(".card-footer").before(template("tipTpl",{tip: stat.question.tip}))
+            stat.question.showRightAnswer();
+        },
+
+        /*
+         * 计算总得分，并在展示，返回已选的答案
+         */
+        calScore = function () {
+
+            let total = 0;
+            let selectedAnswer = [];
+            paper.questions.forEach((question) => {
+                total += question.calScore();
+                selectedAnswer.push({
+                    type:question.type,
+                    selected: question.selected
+                })
+            });
+
+            alert("总分:" + total);
+            score.find('span').text(total);
+
+            return selectedAnswer;
         },
 
         submit = function () {
 
-            let total = 0;
-            paper.questions.forEach((question) => {
-                total += question.calScore();
-            });
+            // 如果已经交卷，则不做处理
+            if(stat.submitted) {
+                return;
+            }
 
-            alert("总分:" + total);
+            stat.submitted = true;
+
+            // 计算总分
+            console.log(calScore());
+
+            // 展示提示与正确答案
+            showTip();
         }
     ;
 
