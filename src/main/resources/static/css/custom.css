@@ -75,13 +75,15 @@ body.login {
     border-top: .05rem solid #e5e5e5;
 }
 
-#status a{
+#status a, #return a{
     padding: 0.5rem;
     color: rgba(255, 255, 255, 0.6);
 }
 
 #submit a:hover,
-#submit a:focus {
+#submit a:focus,
+#return a:hover,
+#return a:focus{
     color: #fff;
 }
 
