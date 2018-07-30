@@ -101,7 +101,7 @@ const testPaper = (function ($) {
         },
 
         showTip = function () {
-            question.find(".card-footer").before(template("tipTpl",{tip: stat.question.tip}))
+            question.find(".card-footer").before(template("tipTpl",{tip: stat.question.tip}));
             stat.question.showRightAnswer();
         },
 
@@ -110,14 +110,32 @@ const testPaper = (function ($) {
          */
         calScore = function () {
 
-            let total = 0;
-            let selectedAnswer = [];
-            paper.questions.forEach((question) => {
-                total += question.calScore();
+            let total = 0,
+                selectedAnswer = [],
+                getTableClass = function(correct, score) {
+                if (correct) {
+                    return "table-success";
+                } else if (score > 0) {
+                    return "table-warning";
+                } else {
+                    return "table-danger"
+                }
+            };
+
+            paper.questions.forEach((question, index) => {
+                let score = question.calScore();
+                let correct = question.isCorrect();
+
+                getTableClass(correct, score);
+
+                qidSelector.find('.modal-body #selector' + index).addClass(getTableClass(correct, score));
+
+                total += score;
                 selectedAnswer.push({
-                    type:question.type,
-                    selected: question.selected
-                })
+                    type: question.type,
+                    selected: question.selected,
+                    correct: correct
+                });
             });
 
             alert("总分:" + total);

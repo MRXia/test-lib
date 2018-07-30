@@ -50,6 +50,14 @@ const questionType = (function ($) {
         showRightAnswer() {
         }
 
+        isCorrect() {
+            return this.selected === this.rightAnswer;
+        }
+
+        calScore() {
+            return this.isCorrect() ? this.score : 0;
+        }
+
         /* 多选题选择答案时，根据答案列表与当前选项，返回选择后的结果
          * 遍历A,B,C,D选项，如果当前答案包含而被选中，则去除选项，如果当前答案未包含而选中，则添加该选项
          * 如已选择"AC", 若选择"B"选项，则返回"ABC";若选择"A"选项，则返回"C"
@@ -63,10 +71,6 @@ const questionType = (function ($) {
                     return choose ? '' : value;
                 }
             }).join('');
-        }
-
-        calScore() {
-            return this.selected === this.rightAnswer ? this.score : 0;
         }
     }
 
@@ -244,6 +248,10 @@ const questionType = (function ($) {
             this.selected[item].split('').forEach(value => {
                 $("#item" + item + "-answer" + value).append(checked.clone());
             });
+        }
+
+        isCorrect() {
+            return this.selected.toString() === this.rightAnswer.toString();
         }
 
         // 操作题平均每小题2分，答对全部选项得2分，未答对全部得1分，答错选项则为0分

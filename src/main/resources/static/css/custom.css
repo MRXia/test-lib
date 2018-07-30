@@ -87,6 +87,10 @@ body.login {
     color: #fff;
 }
 
+#qidSelector .modal-body table>tbody>tr>td[id^=selector] {
+    cursor: pointer;
+}
+
 #questionContent .list-group .list-group-item.checked {
     background-color: #78C2AD;
 }
