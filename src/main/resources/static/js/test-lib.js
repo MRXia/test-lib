@@ -26,6 +26,7 @@ const testPaper = (function ($) {
         },
         question = $("#questionContent"),   // 题目面板
         qidSelector = $("#qidSelector"),    // 题目选择器
+        timer,
         score = $("#score")             // 总得分
     ;
 
@@ -69,7 +70,8 @@ const testPaper = (function ($) {
         },
 
         countdown = function (time) {
-
+           timer = new Timer(time, "#timer span", submit);
+           timer.start();
         },
 
         // 选择答案
@@ -154,6 +156,9 @@ const testPaper = (function ($) {
             stat.submitted = true;
             $("#submit").hide();
             $("#return").show();
+
+            // 停止计时
+            timer.stop();
 
             // 计算总分
             console.log(calScore());
